@@ -1,5 +1,3 @@
-# svelte app
-
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
-
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+# exploratory svelte app with svelte testing-library
+* following along with this tutorial 
+    `https://www.udemy.com/course/svelte-with-test-driven-development/`
