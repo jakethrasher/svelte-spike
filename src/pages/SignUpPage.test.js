@@ -2,6 +2,7 @@ import SignUpPage from './SignUpPage.svelte';
 import { render, screen } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
+import axios from 'axios';
 
 describe('sign up page', () => {
   describe('Layout', () => {
@@ -12,12 +13,12 @@ describe('sign up page', () => {
     })
     it('has username input', () => {
       const {container} = render(SignUpPage);
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username');
       expect(usernameInput).toBeInTheDocument();
     })
     it('has email input', () => {
       render(SignUpPage);
-      const emailInput = screen.getByLabelText('Email')
+      const emailInput = screen.getByLabelText('Email');
       expect(emailInput).toBeInTheDocument();
     })
     it('has password input', () => {
@@ -63,6 +64,32 @@ describe('sign up page', () => {
       await userEvent.type(passwordRepeatInput, 'P4ssword');
 
       expect(signUpButton).toBeEnabled();
+    });
+    it('sends username, email, and password to backend after clicking button', async () => {
+      render(SignUpPage);
+      const username = screen.getByLabelText('Username');
+      const emailInput = screen.getByLabelText('Email');
+      const passwordInput = screen.getByLabelText('Password');
+      const passwordRepeatInput = screen.getByLabelText('Password Repeat');
+      const signUpButton = screen.getByRole('button', {name: 'Sign Up'});
+      
+      await userEvent.type(username, 'spiderman');
+      await userEvent.type(emailInput, 'spidey@gmail.com');
+      await userEvent.type(passwordInput, 'P4ssword');
+      await userEvent.type(passwordRepeatInput, 'P4ssword');
+
+      const mockFn = jest.fn();
+      axios.post = mockFn;
+
+      await userEvent.click(signUpButton);
+      
+      const firstCall = mockFn.mock.calls[0];
+      const body = firstCall[1];
+      expect(body).toEqual({
+        username: 'spiderman',
+        email: 'spidey@gmail.com',
+        password: 'P4ssword',
+      })
     });
   });
 })
